@@ -6,4 +6,4 @@ RUN pip install -r /code/requirements.txt
 WORKDIR /code
 ENV PYTHONPATH '/code/'
 
-CMD ["python" , "/code/collector.py"]
+CMD ["python" , "-u", "/code/collector.py"]

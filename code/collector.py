@@ -1,4 +1,4 @@
-from prometheus_client import start_http_server, Summary, Gauge
+from prometheus_client import start_http_server, Summary, Gauge, Info
 import datetime, time
 import requests
 import json
@@ -11,17 +11,13 @@ except KeyError:
   print('Variable LOAD_BALANCER_ID not defined')
   sys.exit(1)
 
-
 try:
   accessToken = os.environ['ACCEESS_TOKEN']
 except KeyError:
   print('Variable ACCEESS_TOKEN not defined')
   sys.exit(1)
 
-
 requestUrl = 'https://api.hetzner.cloud/v1/load_balancers/' + loadBalancerId
-
-
 
 def getLoadBalancerType(id):
     url = requestUrl
@@ -60,25 +56,31 @@ def getMetrics(metricsType):
 
 if __name__ == '__main__':
 
+  loadBalancerName = getLoadBalancerType(loadBalancerId)['load_balancer']['name']
+
   for services in getLoadBalancerType(loadBalancerId)['load_balancer']['services']:
       if services['protocol'] == 'http':
           lbType = 'http'      
       else:
           lbType = 'tcp'
 
-  HetznerOpenConnections = Gauge('hetzner_load_balancer_open_connections', 'Open Connections on Hetzner Load Balancer')
-  HetznerConnectionsPerSecond = Gauge('hetzner_load_balancer_connections_per_second', 'Connections per Second on Hetzner Load Balancer')
-  HetznerRequestsPerSecond = Gauge('hetzner_load_balancer_requests_per_second', 'Requests per Second on Hetzner Load Balancer')
-  HetznerBandwidthIn = Gauge('hetzner_load_balancer_bandwidth_in', 'Bandwidth in on Hetzner Load Balancer')
-  HetznerBandwidthOut = Gauge('hetzner_load_balancer_bandwidth_out', 'Bandwidth out on Hetzner Load Balancer')
-  start_http_server(8000)
   
+  HetznerLoadBalancerInfo = Info('hetzner_load_balancer', 'Hetzner Load Balancer Exporter build info', ['hetzner_load_balancer_id', 'hetzner_load_balancer_name'])
+  HetznerOpenConnections = Gauge('hetzner_load_balancer_open_connections', 'Open Connections on Hetzner Load Balancer', ['hetzner_load_balancer_id', 'hetzner_load_balancer_name'])
+  HetznerConnectionsPerSecond = Gauge('hetzner_load_balancer_connections_per_second', 'Connections per Second on Hetzner Load Balancer', ['hetzner_load_balancer_id', 'hetzner_load_balancer_name'])
+  HetznerRequestsPerSecond = Gauge('hetzner_load_balancer_requests_per_second', 'Requests per Second on Hetzner Load Balancer', ['hetzner_load_balancer_id', 'hetzner_load_balancer_name'])
+  HetznerBandwidthIn = Gauge('hetzner_load_balancer_bandwidth_in', 'Bandwidth in on Hetzner Load Balancer', ['hetzner_load_balancer_id', 'hetzner_load_balancer_name'])
+  HetznerBandwidthOut = Gauge('hetzner_load_balancer_bandwidth_out', 'Bandwidth out on Hetzner Load Balancer', ['hetzner_load_balancer_id', 'hetzner_load_balancer_name'])
+  
+  start_http_server(8000)
+  print('Web server started on port 8000')
 
   while True:
-    HetznerOpenConnections.set_function(lambda: getMetrics('open_connections')["metrics"]["time_series"]["open_connections"]["values"][0][1])
-    HetznerConnectionsPerSecond.set_function(lambda: getMetrics('connections_per_second')["metrics"]["time_series"]["connections_per_second"]["values"][0][1])
+    HetznerLoadBalancerInfo.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).info({'version': '0.0.1', 'buildhost': 'drake0103@gmail.com'})
+    HetznerOpenConnections.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('open_connections')["metrics"]["time_series"]["open_connections"]["values"][0][1])
+    HetznerConnectionsPerSecond.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('connections_per_second')["metrics"]["time_series"]["connections_per_second"]["values"][0][1])
     if lbType == 'http':
-      HetznerConnectionsPerSecond.set_function(lambda: getMetrics('requests_per_second')["metrics"]["time_series"]["requests_per_second"]["values"][0][1])
-    HetznerBandwidthIn.set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.in"]["values"][0][1])
-    HetznerBandwidthOut.set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.out"]["values"][0][1])
+      HetznerConnectionsPerSecond.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('requests_per_second')["metrics"]["time_series"]["requests_per_second"]["values"][0][1])
+    HetznerBandwidthIn.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.in"]["values"][0][1])
+    HetznerBandwidthOut.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.out"]["values"][0][1])
     time.sleep(1)

@@ -13,15 +13,25 @@ spec:
     metadata:
       labels:
         app: hetzner-load-balancer-prometheus-exporter
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8000'
+        prometheus.io/path: '/'
     spec:
       containers:
       - name: exporter
+        image: infraduckture/hetzner-load-balancer-prometheus-exporter:latest
         env:
         - name: LOAD_BALANCER_ID
           value: ""
         - name: ACCEESS_TOKEN
           value: ""
-        image: 
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
         ports:
         - containerPort: 8000
-

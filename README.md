@@ -12,7 +12,7 @@ Go to [Hetzner Console](console.hetzner.cloud). Open project where you have runn
 
 ### Load Balancer ID
 
-Next we sholud get `ID` of our Load Balancer. This information we will get from `Hetner API`, everything about `API` you find in [official API documentation](https://docs.hetzner.cloud/#load-balancers-get-all-load-balancers)
+Next we sholud get `ID` of our Load Balancer. This information we will get from `Hetzner API`, everything about `API` you find in [official API documentation](https://docs.hetzner.cloud/#load-balancers-get-all-load-balancers)
 
 Example `curl`
 
@@ -71,7 +71,7 @@ Open in your browser `localhost:8000`:
 
 ## Grafana
 
-Grafana Dashboard you can find (here)[example/grafana-dashboard/hetzner-load-balancer.json]
+Grafana Dashboard you can find [here](example/grafana-dashboard/hetzner-load-balancer.json)
 
 Metrics in Hetzner console
 ![Hetzner console](img/hetzner_lb_metrics.png)

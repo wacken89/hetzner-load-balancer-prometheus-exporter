@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hetzner-load-balancer-prometheus-exporter
+  labels:
+    app: hetzner-load-balancer-prometheus-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hetzner-load-balancer-prometheus-exporter
+  template:
+    metadata:
+      labels:
+        app: hetzner-load-balancer-prometheus-exporter
+    spec:
+      containers:
+      - name: exporter
+        env:
+        - name: LOAD_BALANCER_ID
+          value: ""
+        - name: ACCEESS_TOKEN
+          value: ""
+        image: 
+        ports:
+        - containerPort: 8000
+

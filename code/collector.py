@@ -60,9 +60,7 @@ if __name__ == '__main__':
 
   for services in getLoadBalancerType(loadBalancerId)['load_balancer']['services']:
       if services['protocol'] == 'http':
-          lbType = 'http'      
-      else:
-          lbType = 'tcp'
+          lbType = 'http'
 
   
   HetznerLoadBalancerInfo = Info('hetzner_load_balancer', 'Hetzner Load Balancer Exporter build info', ['hetzner_load_balancer_id', 'hetzner_load_balancer_name'])

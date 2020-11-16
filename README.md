@@ -1,6 +1,6 @@
 # Hetzner Load Balancer Prometheus Exporter
 
-Exports meterics from Hetner Load Balancer for consumption by Prometheus
+Exports metrics from Hetzner Load Balancer for consumption by Prometheus
 
 ## Preparing
 

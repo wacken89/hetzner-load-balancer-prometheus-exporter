@@ -81,15 +81,15 @@ if __name__ == '__main__':
   print('Web server started on port 8000')
 
   while True:
+    HetznerLoadBalancerInfo.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).info({'version': '0.0.1', 'buildhost': 'drake0103@gmail.com'})
     try:
-      HetznerLoadBalancerInfo.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).info({'version': '0.0.1', 'buildhost': 'drake0103@gmail.com'})
       HetznerOpenConnections.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('open_connections')["metrics"]["time_series"]["open_connections"]["values"][0][1])
-      HetznerConnectionsPerSecond.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('connections_per_second')["metrics"]["time_series"]["connections_per_second"]["values"][0][1])
-      if lbType == 'http':
-        HetznerConnectionsPerSecond.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('requests_per_second')["metrics"]["time_series"]["requests_per_second"]["values"][0][1])
-      HetznerBandwidthIn.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.in"]["values"][0][1])
-      HetznerBandwidthOut.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.out"]["values"][0][1])
-      time.sleep(1)
     except:
-      print('Variable ACCEESS_TOKEN not defined')
-
+      print('Couldnt get field', e )
+    HetznerConnectionsPerSecond.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('connections_per_second')["metrics"]["time_series"]["connections_per_second"]["values"][0][1])
+    if lbType == 'http':
+      HetznerConnectionsPerSecond.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('requests_per_second')["metrics"]["time_series"]["requests_per_second"]["values"][0][1])
+    HetznerBandwidthIn.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.in"]["values"][0][1])
+    HetznerBandwidthOut.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.out"]["values"][0][1])     
+    
+    time.sleep(1)

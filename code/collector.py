@@ -17,6 +17,7 @@ except KeyError:
   print('Variable ACCEESS_TOKEN not defined')
   sys.exit(1)
 
+
 requestUrl = 'https://api.hetzner.cloud/v1/load_balancers/' + loadBalancerId
 
 def getLoadBalancerType(id):
@@ -56,11 +57,17 @@ def getMetrics(metricsType):
 
 if __name__ == '__main__':
 
-  loadBalancerName = getLoadBalancerType(loadBalancerId)['load_balancer']['name']
-
+  try:
+    loadBalancerName = getLoadBalancerType(loadBalancerId)['load_balancer']['name']
+  except Exception as e:
+    print('Couldnt get field', e )
+    sys.exit(1)
+    
   for services in getLoadBalancerType(loadBalancerId)['load_balancer']['services']:
       if services['protocol'] == 'http':
           lbType = 'http'
+      else:
+          lbType = 'tcp'
 
   
   HetznerLoadBalancerInfo = Info('hetzner_load_balancer', 'Hetzner Load Balancer Exporter build info', ['hetzner_load_balancer_id', 'hetzner_load_balancer_name'])
@@ -74,11 +81,15 @@ if __name__ == '__main__':
   print('Web server started on port 8000')
 
   while True:
-    HetznerLoadBalancerInfo.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).info({'version': '0.0.1', 'buildhost': 'drake0103@gmail.com'})
-    HetznerOpenConnections.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('open_connections')["metrics"]["time_series"]["open_connections"]["values"][0][1])
-    HetznerConnectionsPerSecond.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('connections_per_second')["metrics"]["time_series"]["connections_per_second"]["values"][0][1])
-    if lbType == 'http':
-      HetznerConnectionsPerSecond.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('requests_per_second')["metrics"]["time_series"]["requests_per_second"]["values"][0][1])
-    HetznerBandwidthIn.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.in"]["values"][0][1])
-    HetznerBandwidthOut.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.out"]["values"][0][1])
-    time.sleep(1)
+    try:
+      HetznerLoadBalancerInfo.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).info({'version': '0.0.1', 'buildhost': 'drake0103@gmail.com'})
+      HetznerOpenConnections.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('open_connections')["metrics"]["time_series"]["open_connections"]["values"][0][1])
+      HetznerConnectionsPerSecond.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('connections_per_second')["metrics"]["time_series"]["connections_per_second"]["values"][0][1])
+      if lbType == 'http':
+        HetznerConnectionsPerSecond.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('requests_per_second')["metrics"]["time_series"]["requests_per_second"]["values"][0][1])
+      HetznerBandwidthIn.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.in"]["values"][0][1])
+      HetznerBandwidthOut.labels(hetzner_load_balancer_id=loadBalancerId, hetzner_load_balancer_name=loadBalancerName).set_function(lambda: getMetrics('bandwidth')["metrics"]["time_series"]["bandwidth.out"]["values"][0][1])
+      time.sleep(1)
+    except:
+      print('Variable ACCEESS_TOKEN not defined')
+

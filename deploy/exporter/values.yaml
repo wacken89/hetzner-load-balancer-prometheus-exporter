@@ -31,7 +31,7 @@ podAnnotations:
 
 env:
   loadBalancerId: ""
-  acceessToken: ""
+  accessToken: ""
 
 podSecurityContext: {}
   # fsGroup: 2000

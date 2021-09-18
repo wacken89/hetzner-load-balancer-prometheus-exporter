@@ -48,7 +48,7 @@ In `deploy/kubernetes.yaml` add in `env` section id which we got from `API` and 
 env:
   - name: LOAD_BALANCER_ID
   value: ""
-  - name: ACCEESS_TOKEN
+  - name: ACCESS_TOKEN
   value: ""
 ```
 

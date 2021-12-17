@@ -18,9 +18,11 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
 
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag wacken/hetzner-load-balancer-prometheus-exporter:latest
+    - name: Push the Docker image
+      run: docker push wacken/hetzner-load-balancer-prometheus-exporter:latest

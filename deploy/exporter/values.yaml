@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: infraduckture/hetzner-load-balancer-prometheus-exporter
+  repository: wacken/hetzner-load-balancer-prometheus-exporter
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest

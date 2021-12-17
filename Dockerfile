@@ -1,7 +1,7 @@
-FROM python:3.8.6
+FROM python:3.8-slim
 
-ADD code /code
-RUN pip install -r /code/requirements.txt
+COPY code /code
+RUN pip install --no-cache-dir -r /code/requirements.txt
 
 WORKDIR /code
 ENV PYTHONPATH '/code/'

@@ -35,8 +35,8 @@ spec:
           env:
           - name: LOAD_BALANCER_ID
             value: "{{ .Values.env.loadBalancerId }}"
-          - name: ACCEESS_TOKEN
-            value: "{{ .Values.env.acceessToken }}"
+          - name: ACCESS_TOKEN
+            value: "{{ .Values.env.accessToken }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http

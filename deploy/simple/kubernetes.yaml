@@ -24,7 +24,7 @@ spec:
         env:
         - name: LOAD_BALANCER_ID
           value: ""
-        - name: ACCEESS_TOKEN
+        - name: ACCESS_TOKEN
           value: ""
         resources:
           requests:

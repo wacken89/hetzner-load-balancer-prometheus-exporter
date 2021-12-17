@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  login:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       -
@@ -17,12 +17,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-
-  build-and-push:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag wacken/hetzner-load-balancer-prometheus-exporter:latest
-    - name: Push the Docker image
-      run: docker push wacken/hetzner-load-balancer-prometheus-exporter:latest
+      - uses: actions/checkout@v2
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag wacken/hetzner-load-balancer-prometheus-exporter:latest
+      - name: Push the Docker image
+        run: docker push wacken/hetzner-load-balancer-prometheus-exporter:latest

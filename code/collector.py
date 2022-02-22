@@ -84,7 +84,7 @@ if __name__ == '__main__':
     
     loadBalancerFullList.append([loadBalancerId, loadBalancerName, lbType])
 
-    print(f'\n\tName:\t {loadBalancerName}\n\tId:\t{loadBalancerId}\n\tType:\t{lbType}')
+    print(f'\n\tName:\t{loadBalancerName}\n\tId:\t{loadBalancerId}\n\tType:\t{lbType}')
 
   id_name_list = ['hetzner_load_balancer_id', 'hetzner_load_balancer_name']
   HetznerLoadBalancerInfo = Info('hetzner_load_balancer', 'Hetzner Load Balancer Exporter build info')
@@ -95,7 +95,8 @@ if __name__ == '__main__':
   HetznerBandwidthOut = Gauge('hetzner_load_balancer_bandwidth_out', 'Bandwidth out on Hetzner Load Balancer', id_name_list)
 
   start_http_server(8000)
-  print('Hetzner Load Balancer Exporter started on port 8000\n')
+  print('\nHetzner Load Balancer Exporter started')
+  print('Visit http://localhost:8000/ to view the metrics')
   HetznerLoadBalancerInfo.info({'version': '2.0.0', 'buildhost': 'drake0103@gmail.com'})
 
   while True:

@@ -33,7 +33,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           env:
-          - name: LOAD_BALANCER_ID
+          - name: LOAD_BALANCER_IDS
             value: "{{ .Values.env.loadBalancerId }}"
           - name: ACCESS_TOKEN
             value: "{{ .Values.env.accessToken }}"

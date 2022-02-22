@@ -22,7 +22,7 @@ spec:
       - name: exporter
         image: wacken/hetzner-load-balancer-prometheus-exporter:latest
         env:
-        - name: LOAD_BALANCER_ID
+        - name: LOAD_BALANCER_IDS
           value: ""
         - name: ACCESS_TOKEN
           value: ""

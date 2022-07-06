@@ -47,9 +47,9 @@ In `deploy/kubernetes.yaml` add in `env` section id which we got from `API` and 
 ```yaml
 env:
   - name: LOAD_BALANCER_IDS
-  value: "11,22,33,44"
+    value: "11,22,33,44"
   - name: ACCESS_TOKEN
-  value: "ewsfds43r*****132"
+    value: "ewsfds43r*****132"
 ```
 
 Deploy it to Kubernetes cluster

@@ -37,6 +37,10 @@ spec:
             value: "{{ .Values.env.loadBalancerId }}"
           - name: ACCESS_TOKEN
             value: "{{ .Values.env.accessToken }}"
+          {{- if .Values.env.scrapeInterval }} 
+          - name: SCRAPE_INTERVAL
+            value: "{{ .Values.env.scrapeInterval }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http

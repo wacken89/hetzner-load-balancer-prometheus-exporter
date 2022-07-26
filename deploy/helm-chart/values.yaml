@@ -32,6 +32,7 @@ podAnnotations:
 env:
   loadBalancerId: ""
   accessToken: ""
+  # scrapeInterval: 
 
 podSecurityContext: {}
   # fsGroup: 2000

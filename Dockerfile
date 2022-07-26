@@ -8,4 +8,4 @@ ENV PYTHONPATH '/code/'
 
 EXPOSE 8000
 
-CMD ["python" , "-u", "/code/collector.py"]
+CMD ["python" , "-u", "/code/exporter.py"]

@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  hetzner-load-balancer-prometheus-exporter:
+    image: test
+    container_name: hetzner-lb
+    ports:
+      - 8000
+    environment:
+      LOAD_BALANCER_IDS: 'all'
+      ACCESS_TOKEN: 'r6Nxhp1ROZTDSPWCk5oUW1zL2NeY1aaAoD7ei81fWhjjrMBmtZ5EXqZEi8rcGQQR'
+      SCRAPE_INTERVAL: '30'

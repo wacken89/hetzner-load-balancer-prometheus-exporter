@@ -50,7 +50,16 @@ env:
     value: "11,22,33,44"
   - name: ACCESS_TOKEN
     value: "ewsfds43r*****132"
+  ## Optional
+  - name: SCRAPE_INTERVAL
+    value: '60'
 ```
+
+| Enviroment  | Description | 
+| ------- | ------ |
+| `LOAD_BALANCER_IDS` | Supported string with specific id `11,22,33` or `all` for scraping metrics from all load balancers in the project |
+| `ACCESS_TOKEN` | Hetzner API token |
+| Optional `SCRAPE_INTERVAL` | value in seconds, default value is `30 seconds` |
 
 Deploy it to Kubernetes cluster
 

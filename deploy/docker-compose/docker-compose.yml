@@ -7,5 +7,5 @@ services:
       - 8000
     environment:
       LOAD_BALANCER_IDS: 'all'
-      ACCESS_TOKEN: 'r6Nxhp1ROZTDSPWCk5oUW1zL2NeY1aaAoD7ei81fWhjjrMBmtZ5EXqZEi8rcGQQR'
+      ACCESS_TOKEN: ''
       SCRAPE_INTERVAL: '30'

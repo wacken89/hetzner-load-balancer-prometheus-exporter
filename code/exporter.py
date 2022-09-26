@@ -170,7 +170,7 @@ if __name__ == '__main__':
     start_http_server(8000)
     print('\nHetzner Load Balancer Exporter started')
     print('Visit http://localhost:8000/ to view the metrics')
-    hetzner_load_balancer_info.info({'version': '2.0.0', 'buildhost': 'netblognet@gmail.com'})
+    hetzner_load_balancer_info.info({'version': '1.2.0', 'buildhost': 'drake0103@gmail.com'})
 
     while True:
         for load_balancer_id, lb_name, load_balancer_type in load_balancer_full_list:

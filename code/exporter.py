@@ -3,28 +3,40 @@ import time
 import json
 import os
 import sys
+from typing import Optional
 from prometheus_client import start_http_server, Gauge, Info
 import requests
+from pathlib import Path
 
 
-try:
-    load_balancer_ids = os.environ['LOAD_BALANCER_IDS']
-except KeyError:
-    print('Variable LOAD_BALANCER_IDS not defined')
-    sys.exit(1)
+def load_env(var: str, default: Optional[any] = None) -> Optional[str]:
+    if var in os.environ:
+        return os.environ[var]
 
-try:
-    access_token = os.environ['ACCESS_TOKEN']
-except KeyError:
-    print('Variable ACCESS_TOKEN not defined')
-    sys.exit(1)
+    path_var = f"{var}_PATH"
 
-try:
-    SCRAPE_INTERVAL = os.environ['SCRAPE_INTERVAL']
-except KeyError:
-    print('Variable SCRAPE_INTERVAL not defined using default')
-    SCRAPE_INTERVAL = 30
+    if path_var not in os.environ:
+        if default is None:
+            raise KeyError(f"Neither variable {var} nor {path_var} are defined")
 
+        print(f"Variable {var} is not defined, using default {default}")
+        return default
+
+    path = Path(os.environ[path_var])
+    try:
+        with path.open("r", encoding="utf-8") as file:
+            return file.read().strip()
+    except FileNotFoundError as error:
+        if default is None:
+            raise KeyError(f"Missing secret file {path} specified for {path_var}") from error
+
+        print(f"Missing secret file for {path_var}, using default {default}")
+        return default
+
+
+load_balancer_ids = load_env('LOAD_BALANCER_IDS')
+access_token = load_env('ACCESS_TOKEN')
+SCRAPE_INTERVAL = load_env('SCRAPE_INTERVAL', 30)
 
 HETZNER_CLOUD_API_URL_BASE = 'https://api.hetzner.cloud/v1'
 HETZNER_CLOUD_API_URL_LB = f'{HETZNER_CLOUD_API_URL_BASE}/load_balancers/'

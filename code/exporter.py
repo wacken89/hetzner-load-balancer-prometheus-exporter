@@ -17,9 +17,9 @@ def load_env(var: str, default: Optional[any] = None) -> Optional[str]:
 
     if path_var not in os.environ:
         if default is None:
-            raise KeyError(f"Neither variable {var} nor {path_var} are defined")
+            raise KeyError(f"Neither variable '{var}' nor '{path_var}' are defined")
 
-        print(f"Variable {var} is not defined, using default {default}")
+        print(f"Variable '{var}' is not defined, using default '{default}'")
         return default
 
     path = Path(os.environ[path_var])
@@ -28,15 +28,19 @@ def load_env(var: str, default: Optional[any] = None) -> Optional[str]:
             return file.read().strip()
     except FileNotFoundError as error:
         if default is None:
-            raise KeyError(f"Missing secret file {path} specified for {path_var}") from error
+            raise KeyError(f"Missing secret file '{path}' specified for '{path_var}'") from error
 
-        print(f"Missing secret file for {path_var}, using default {default}")
+        print(f"Missing secret file for '{path_var}', using default '{default}'")
         return default
 
 
-load_balancer_ids = load_env('LOAD_BALANCER_IDS')
-access_token = load_env('ACCESS_TOKEN')
-SCRAPE_INTERVAL = load_env('SCRAPE_INTERVAL', 30)
+try:
+    load_balancer_ids = load_env('LOAD_BALANCER_IDS')
+    access_token = load_env('ACCESS_TOKEN')
+    SCRAPE_INTERVAL = load_env('SCRAPE_INTERVAL', 30)
+except KeyError as error:
+    print(str(error)[1:-1])
+    exit(1)
 
 HETZNER_CLOUD_API_URL_BASE = 'https://api.hetzner.cloud/v1'
 HETZNER_CLOUD_API_URL_LB = f'{HETZNER_CLOUD_API_URL_BASE}/load_balancers/'

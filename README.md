@@ -1,101 +1,23 @@
-# Hetzner Load Balancer Prometheus Exporter
+# Grafana Community Kubernetes Helm Charts
 
-Exports metrics from Hetzner Load Balancer for consumption by Prometheus
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/grafana)](https://artifacthub.io/packages/search?repo=grafana)
 
-## Preparing
+The code is provided as-is with no warranties.
 
-### API TOKEN
+## Usage
 
-Go to [Hetzner Console](console.hetzner.cloud). Open project where you have running Load Balancer and create `API TOKEN` in Security section
+[Helm](https://helm.sh) must be installed to use the charts.
+Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 
-![api token](img/api_token.png "API TOKEN")
+Once Helm is set up properly, add the repo as follows:
 
-### Load Balancer ID
-
-Next we sholud get `ID` of our Load Balancer. This information we will get from `Hetzner API`, everything about `API` you find in [official API documentation](https://docs.hetzner.cloud/#load-balancers-get-all-load-balancers)
-
-Example `curl`
-
-```bash
-curl \
-    -H "Authorization: Bearer $API_TOKEN" \
-	'https://api.hetzner.cloud/v1/load_balancers'
+```console
+helm repo add wacken89 https://wacken89.github.io/hetzner-load-balancer-prometheus-exporter
 ```
 
-Response sample
+You can then run `helm search repo wacken89` to see the charts.
 
-```json
-{
-  "load_balancers": [
-    {
-      "id": 4711,
-      "name": "Web Frontend",
-      "public_net": {
-        "enabled": false,
-        "ipv4": {
-          "ip": "1.2.3.4"
-        },
-...
-    }
-}
-```
+<!-- Keep full URL links to repo files because this README syncs from main to gh-pages.  -->
+Chart documentation is available in [directory]().
 
-### Configuring
-
-The exporter can be configured using environment variables. Instead of providing the values directly, you can also use the variables suffixed with `_FILE` to provide a file containing the value, which is useful with mounted secrets, for example.
-
-| Enviroment  | Description | 
-| ------- | ------ |
-| `LOAD_BALANCER_IDS` | Supported string with specific id `11,22,33` or `all` for scraping metrics from all load balancers in the project |
-| `LOAD_BALANCER_IDS_PATH` | Path to a file containing the load balancer IDs |
-| `ACCESS_TOKEN` | Hetzner API token |
-| `ACCESS_TOKEN_PATH` | Path to a file containing the Hetzner API token |
-| Optional `SCRAPE_INTERVAL` | value in seconds, default value is `30 seconds` |
-| Optional `SCRAPE_INTERVAL_PATH` | Path to a file containing the scrape interval |
-
-#### Kubernetes usage
-
-In `deploy/kubernetes.yaml` add in `env` section id which we got from `API` and `API TOKEN`
-
-```yaml
-env:
-  - name: LOAD_BALANCER_IDS
-    value: "11,22,33,44"
-  - name: ACCESS_TOKEN
-    value: "ewsfds43r*****132"
-  ## Optional
-  - name: SCRAPE_INTERVAL
-    value: '60'
-```
-
-Deploy it to Kubernetes cluster
-
-```bash
-kubectl apply -f deploy/kubernetes.yaml
-```
-
-```yaml
-hetzner-exporter:
-  image: 
-```
-
-### Check metrics page
-
-```bash
-kubectl port-forward <pod> 8000:8000
-```
-
-Open in your browser `localhost:8000`:
-
-![exporter metrics](img/exporter_metrics.png)
-
-
-## Grafana
-
-Grafana Dashboard you can find [here](example/grafana-dashboard/hetzner-load-balancer.json)
-
-Metrics in Hetzner console
-![Hetzner console](img/hetzner_lb_metrics.png)
-
-Metrics in Grafana
-![exporter metrics](img/grafana_metrics.png)

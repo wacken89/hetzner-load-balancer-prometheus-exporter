@@ -1,5 +1,5 @@
 apiVersion: v2
-name: exporter
+name: hetzner-load-balancer-exporter
 description: Hetzner Load Balancer Prometheus Exporter
 
 # A chart can be either an 'application' or a 'library' chart.

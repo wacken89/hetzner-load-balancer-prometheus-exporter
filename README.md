@@ -42,6 +42,19 @@ Response sample
 
 ### Configuring
 
+The exporter can be configured using environment variables. Instead of providing the values directly, you can also use the variables suffixed with `_FILE` to provide a file containing the value, which is useful with mounted secrets, for example.
+
+| Enviroment  | Description | 
+| ------- | ------ |
+| `LOAD_BALANCER_IDS` | Supported string with specific id `11,22,33` or `all` for scraping metrics from all load balancers in the project |
+| `LOAD_BALANCER_IDS_FILE` | Path to a file containing the load balancer IDs |
+| `ACCESS_TOKEN` | Hetzner API token |
+| `ACCESS_TOKEN_FILE` | Path to a file containing the Hetzner API token |
+| Optional `SCRAPE_INTERVAL` | value in seconds, default value is `30 seconds` |
+| Optional `SCRAPE_INTERVAL_FILE` | Path to a file containing the scrape interval |
+
+#### Kubernetes usage
+
 In `deploy/kubernetes.yaml` add in `env` section id which we got from `API` and `API TOKEN`
 
 ```yaml
@@ -55,16 +68,15 @@ env:
     value: '60'
 ```
 
-| Enviroment  | Description | 
-| ------- | ------ |
-| `LOAD_BALANCER_IDS` | Supported string with specific id `11,22,33` or `all` for scraping metrics from all load balancers in the project |
-| `ACCESS_TOKEN` | Hetzner API token |
-| Optional `SCRAPE_INTERVAL` | value in seconds, default value is `30 seconds` |
-
 Deploy it to Kubernetes cluster
 
 ```bash
 kubectl apply -f deploy/kubernetes.yaml
+```
+
+```yaml
+hetzner-exporter:
+  image: 
 ```
 
 ### Check metrics page

@@ -24,8 +24,21 @@ spec:
         env:
         - name: LOAD_BALANCER_IDS
           value: ""
+        # Uncoment this part if want to use read IDs from file
+        # - name: LOAD_BALANCER_IDS_PATH
+        #   value: ""
+        
         - name: ACCESS_TOKEN
           value: ""
+        # Uncoment this part if want to use read Token from file  
+        # - name: ACCESS_TOKEN_FILE
+        #   value: ""
+
+        # Optional
+        # - name: SCRAPE_INTERVAL
+        #   value: ""
+        # - name: SCRAPE_INTERVAL_PATH
+        #   value: ""        
         resources:
           requests:
             memory: "128Mi"

@@ -74,9 +74,15 @@ Deploy it to Kubernetes cluster
 kubectl apply -f deploy/kubernetes.yaml
 ```
 
-```yaml
-hetzner-exporter:
-  image: 
+Or use [helm](https://helm.sh/docs/) to deploy the exporter:  
+In `deploy/helm-chart/values.yaml` add in `env` section id which we got from `API` and `API TOKEN`
+
+```bash
+# Add repo
+helm repo add wacken89 https://wacken89.github.io/hetzner-load-balancer-prometheus-exporter
+helm repo update
+# Install chart
+helm install hcloud-lb-exporter wacken89/hetzner-load-balancer-exporter -f values.yml
 ```
 
 ### Check metrics page

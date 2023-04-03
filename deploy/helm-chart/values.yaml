@@ -30,9 +30,20 @@ podAnnotations:
 
 
 env:
-  loadBalancerId: ""
-  accessToken: ""
-  # scrapeInterval: 
+  # Set envs like in the kubernetes pod spec
+  - name: LOAD_BALANCER_IDS
+    value: "all"
+  - name: SCRAPE_INTERVAL
+    value: "60"
+  - name: ACCESS_TOKEN
+    value: ""
+  # Or set token via secret ref
+  # - name: ACCESS_TOKEN
+  #   valueFrom:
+  #     secretKeyRef:
+  #       key: token
+  #       name: hcloud
+
 
 podSecurityContext: {}
   # fsGroup: 2000

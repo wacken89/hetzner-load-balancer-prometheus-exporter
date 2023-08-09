@@ -203,7 +203,15 @@ if __name__ == '__main__':
                                 hetzner_load_balancer_name=lb_name).set(get_metrics('bandwidth',load_balancer_id)["metrics"]["time_series"]["bandwidth.out"]["values"][0][1])
 
             lb_info = get_load_balancer_info(load_balancer_id)['load_balancer']
-            for target in [x for x in lb_info['targets'] if x['type'] == 'server']:
+
+            targets = []
+            for x in lb_info['targets']:
+                if x['type'] == 'server':
+                    targets.append(x)
+                elif x['type'] == 'label_selector':
+                    targets.extend(x['targets'])
+
+            for target in targets:
                 for health_status in target['health_status']:
                     hetzner_service_state.labels(hetzner_load_balancer_id=load_balancer_id,
                                                  hetzner_load_balancer_name=lb_name,

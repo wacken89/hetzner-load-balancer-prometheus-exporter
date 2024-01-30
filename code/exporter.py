@@ -167,7 +167,7 @@ if __name__ == '__main__':
 
         print(f'\n\tName:\t{load_balancer_name}\n\tId:\t{load_balancer_id}\n\tType:\t{LOAD_BALANCER_TYPE}')
 
-    print(f'\nScrape intreval: {SCRAPE_INTERVAL} seconds')
+    print(f'\nScrape interval: {SCRAPE_INTERVAL} seconds')
 
     print('\nBuilding server name cache from Hetzner for labeling ...')
     server_name_cache = get_all_server_names()

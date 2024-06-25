@@ -28,6 +28,7 @@ podAnnotations:
   prometheus.io/port: '8000'
   prometheus.io/path: '/'
 
+podLabels: {}
 
 env:
   # Set envs like in the kubernetes pod spec

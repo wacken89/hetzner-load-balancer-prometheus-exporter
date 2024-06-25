@@ -23,6 +23,11 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+rbac:
+  enabled: false
+  type: ClusterRole # ClusterRole or Role
+  name: "" # example: system:auth-delegator
+
 podAnnotations:
   prometheus.io/scrape: 'true'
   prometheus.io/port: '8000'

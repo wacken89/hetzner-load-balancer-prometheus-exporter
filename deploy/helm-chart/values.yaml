@@ -84,3 +84,22 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+dashboard:
+  enabled: false
+  namespace: "" # will be set to .Release.Namespace if empty
+  labels:
+    grafana_dashboard: "1"
+
+serviceMonitor:
+  enabled: false
+  namespace: ""
+  annotations: {}
+  labels: {}
+  jobLabel: ""
+  honorLabels: false
+  interval: ""
+  scrapeTimeout: ""
+  metricRelabelings: []
+  relabelings: []
+  selector: {}

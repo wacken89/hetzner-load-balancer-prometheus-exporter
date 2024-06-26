@@ -14,7 +14,7 @@ metadata:
     {{- toYaml .Values.serviceMonitor.annotations | nindent 4 }}
   {{- end }}
 spec:
-  jobLabel: {{ .Values.serviceMonitor.jobLabel }}
+  jobLabel: {{ .Values.serviceMonitor.jobLabel | quote }}
   selector:
     matchLabels: 
       {{- include "exporter.selectorLabels" . | nindent 6 }}

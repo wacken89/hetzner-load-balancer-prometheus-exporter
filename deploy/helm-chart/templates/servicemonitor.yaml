@@ -19,7 +19,7 @@ spec:
     matchLabels: 
       {{- include "exporter.selectorLabels" . | nindent 6 }}
   endpoints:
-    - port: metrics
+    - port: http
       scheme: "http"
       {{- if .Values.serviceMonitor.interval }}
       interval: {{ .Values.serviceMonitor.interval }}

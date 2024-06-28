@@ -1,0 +1,13 @@
+{{- if .Values.dashboard.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    {{- include "exporter.labels" . | nindent 4 }}
+    {{- toYaml .Values.dashboard.labels | nindent 4 }}
+  name: {{ include "exporter.fullname" . }}
+  namespace: {{ .Values.dashboard.namespace | default .Release.Namespace }}
+data:
+  dashboard.yaml: |-
+    {{ $.Files.Get "src/dashboards/dashboard.json" | fromJson | toJson }}
+{{- end }}

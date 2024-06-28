@@ -1,0 +1,19 @@
+{{- if and .Values.rbac.enabled (not (eq .Values.rbac.name "")) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ .Values.rbac.type }}Binding
+metadata:
+  labels:
+    {{- include "exporter.labels" . | nindent 4 }}
+  name: {{ include "exporter.fullname" . }}
+  {{- if eq .Values.rbac.type "Role" }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: {{ .Values.rbac.type }}
+  name: {{ .Values.rbac.name }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "exporter.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

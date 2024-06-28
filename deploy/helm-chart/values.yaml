@@ -23,11 +23,17 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+rbac:
+  enabled: false
+  type: ClusterRole # ClusterRole or Role
+  name: "" # example: system:auth-delegator
+
 podAnnotations:
   prometheus.io/scrape: 'true'
   prometheus.io/port: '8000'
   prometheus.io/path: '/'
 
+podLabels: {}
 
 env:
   # Set envs like in the kubernetes pod spec
@@ -84,3 +90,22 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+dashboard:
+  enabled: false
+  namespace: "" # will be set to .Release.Namespace if empty
+  labels:
+    grafana_dashboard: "1"
+
+serviceMonitor:
+  enabled: false
+  namespace: ""
+  annotations: {}
+  labels: {}
+  jobLabel: ""
+  honorLabels: false
+  interval: ""
+  scrapeTimeout: ""
+  metricRelabelings: []
+  relabelings: []
+  selector: {}

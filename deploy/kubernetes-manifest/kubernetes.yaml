@@ -46,5 +46,14 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "250m"
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 11001
+          seccompProfile:
+            type: RuntimeDefault
         ports:
         - containerPort: 8000

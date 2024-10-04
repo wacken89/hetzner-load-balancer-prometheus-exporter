@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   hetzner-load-balancer-exporter:
   - apiVersion: v2
+    appVersion: 1.5.0
+    created: "2024-10-04T15:12:38.976053991Z"
+    description: Hetzner Load Balancer Prometheus Exporter
+    digest: 55e7f50e2360a0b9baad20e5eec3d9670a097a85d58935627fa83b5a24f1dbd4
+    name: hetzner-load-balancer-exporter
+    type: application
+    urls:
+    - https://github.com/wacken89/hetzner-load-balancer-prometheus-exporter/releases/download/hetzner-load-balancer-exporter-1.5.0/hetzner-load-balancer-exporter-1.5.0.tgz
+    version: 1.5.0
+  - apiVersion: v2
     appVersion: 1.3.0
     created: "2024-06-28T13:57:49.964783566Z"
     description: Hetzner Load Balancer Prometheus Exporter
@@ -41,4 +51,4 @@ entries:
     urls:
     - https://github.com/wacken89/hetzner-load-balancer-prometheus-exporter/releases/download/hetzner-load-balancer-exporter-1.1.1/hetzner-load-balancer-exporter-1.1.1.tgz
     version: 1.1.1
-generated: "2024-06-28T13:57:49.964803394Z"
+generated: "2024-10-04T15:12:38.976087654Z"

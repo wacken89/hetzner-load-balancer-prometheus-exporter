@@ -195,7 +195,7 @@ if __name__ == '__main__':
             hetzner_connections_per_second.labels(hetzner_load_balancer_id=load_balancer_id,
                             hetzner_load_balancer_name=lb_name).set(get_metrics('connections_per_second',load_balancer_id)["metrics"]["time_series"]["connections_per_second"]["values"][0][1])
             if load_balancer_type == 'http':
-                hetzner_connections_per_second.labels(hetzner_load_balancer_id=load_balancer_id,
+                hetzner_requests_per_second.labels(hetzner_load_balancer_id=load_balancer_id,
                                 hetzner_load_balancer_name=lb_name).set(get_metrics('requests_per_second',load_balancer_id)["metrics"]["time_series"]["requests_per_second"]["values"][0][1])
             hetzner_bandwidth_in.labels(hetzner_load_balancer_id=load_balancer_id,
                                 hetzner_load_balancer_name=lb_name).set(get_metrics('bandwidth',load_balancer_id)["metrics"]["time_series"]["bandwidth.in"]["values"][0][1])

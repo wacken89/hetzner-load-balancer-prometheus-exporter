@@ -158,7 +158,7 @@ if __name__ == '__main__':
 
 
         for services in load_balancer['services']:
-            if services['protocol'] == 'http':
+            if services['protocol'] in ['http', 'https']:
                 LOAD_BALANCER_TYPE = 'http'
             else:
                 LOAD_BALANCER_TYPE = 'tcp'

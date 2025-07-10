@@ -110,9 +110,9 @@ def get_server_name_from_cache(server_id: str) -> str:
 
 
 def get_metrics(metrics_type, lbid):
-    utc_offset_sec = time.altzone if time.localtime().tm_isdst else time.timezone
-    utc_offset = datetime.timedelta(seconds=-utc_offset_sec)
-    hetzner_date = datetime.datetime.now().replace(tzinfo=datetime.timezone(offset=utc_offset)).isoformat()
+    now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+    start = (now - datetime.timedelta(hours=1)).isoformat() + "Z"
+    end = now.isoformat() + "Z"
 
     url = f"{HETZNER_CLOUD_API_URL_LB}{lbid}/metrics"
 
@@ -121,15 +121,16 @@ def get_metrics(metrics_type, lbid):
         'Authorization': f"Bearer {access_token}"
     }
 
-    data = {
+    params = {
         "type": metrics_type,
-        "start": hetzner_date,
-        "end": hetzner_date,
+        "start": start,
+        "end": end,
         "step": 60
     }
 
-    get = requests.get(url, headers=headers, data=json.dumps(data))
+    get = requests.get(url, headers=headers, params=params)
     return get.json()
+
 
 
 if __name__ == '__main__':

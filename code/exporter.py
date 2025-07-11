@@ -111,8 +111,8 @@ def get_server_name_from_cache(server_id: str) -> str:
 
 def get_metrics(metrics_type, lbid):
     now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
-    start = (now - datetime.timedelta(hours=1)).isoformat() + "Z"
-    end = now.isoformat() + "Z"
+    start = (now - datetime.timedelta(hours=1)).isoformat()
+    end = now.isoformat()
 
     url = f"{HETZNER_CLOUD_API_URL_LB}{lbid}/metrics"
 

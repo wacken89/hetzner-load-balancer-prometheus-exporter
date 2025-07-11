@@ -111,8 +111,8 @@ def get_server_name_from_cache(server_id: str) -> str:
 
 def get_metrics(metrics_type, lbid):
     now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
-    start = (now - datetime.timedelta(hours=1)).isoformat() + "Z"
-    end = now.isoformat() + "Z"
+    start = (now - datetime.timedelta(hours=1)).isoformat()
+    end = now.isoformat()
 
     url = f"{HETZNER_CLOUD_API_URL_LB}{lbid}/metrics"
 
@@ -129,7 +129,16 @@ def get_metrics(metrics_type, lbid):
     }
 
     get = requests.get(url, headers=headers, params=params)
-    return get.json()
+    try:
+        data = get.json()
+        if "metrics" not in data:
+            print(f"[WARN] No 'metrics' key in response for {metrics_type} on LB {lbid}")
+            print("[DEBUG] Raw response:", data)
+        return data
+    except Exception as e:
+        print(f"[ERROR] Failed to parse metrics response: {e}")
+        print("[DEBUG] Raw response text:", get.text)
+        return {}
 
 
 

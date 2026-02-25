@@ -7,7 +7,7 @@ COPY code /code
 RUN pip install --no-cache-dir -r /code/requirements.txt
 
 WORKDIR /code
-ENV PYTHONPATH '/code/'
+ENV PYTHONPATH='/code/'
 
 EXPOSE 8000
 

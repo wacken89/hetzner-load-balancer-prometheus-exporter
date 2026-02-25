@@ -216,7 +216,7 @@ if __name__ == '__main__':
 
             targets = []
             for x in lb_info['targets']:
-                if x['type'] == 'server':
+                if x['type'] == 'server' or x['type'] == 'ip':
                     targets.append(x)
                 elif x['type'] == 'label_selector':
                     targets.extend(x['targets'])
@@ -225,8 +225,8 @@ if __name__ == '__main__':
                 for health_status in target['health_status']:
                     hetzner_service_state.labels(hetzner_load_balancer_id=load_balancer_id,
                                                  hetzner_load_balancer_name=lb_name,
-                                                 hetzner_target_id=target['server']['id'],
-                                                 hetzner_target_name=get_server_name_from_cache(target['server']['id']),
+                                                 hetzner_target_id=(target['ip']['ip'] if target['type'] == 'ip' else target['server']['id']),
+                                                 hetzner_target_name=(target['ip']['ip'] if target['type'] == 'ip' else get_server_name_from_cache(target['server']['id'])),
                                                  hetzner_target_port=health_status['listen_port'])\
                         .set((1 if health_status['status'] == 'healthy' else 0))
         time.sleep(int(SCRAPE_INTERVAL))

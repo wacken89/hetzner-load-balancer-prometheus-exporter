@@ -98,6 +98,7 @@ dashboard:
   namespace: "" # will be set to .Release.Namespace if empty
   labels:
     grafana_dashboard: "1"
+  annotations: {}
 
 serviceMonitor:
   enabled: false

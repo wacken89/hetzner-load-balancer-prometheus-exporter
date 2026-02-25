@@ -5,6 +5,10 @@ metadata:
   labels:
     {{- include "exporter.labels" . | nindent 4 }}
     {{- toYaml .Values.dashboard.labels | nindent 4 }}
+  {{- with .Values.dashboard.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   name: {{ include "exporter.fullname" . }}
   namespace: {{ .Values.dashboard.namespace | default .Release.Namespace }}
 data:

@@ -141,6 +141,14 @@ def get_metrics(metrics_type, lbid):
         return {}
 
 
+def extract_latest_metric_value(metrics_payload: dict, metric_key: str, default: float = 0.0) -> float:
+    series = metrics_payload.get("metrics", {}).get("time_series", {}).get(metric_key, {})
+    values = series.get("values", [])
+    if not values:
+        return default
+    return float(values[0][1])
+
+
 
 if __name__ == '__main__':
 
@@ -200,17 +208,33 @@ if __name__ == '__main__':
 
     while True:
         for load_balancer_id, lb_name, load_balancer_type in load_balancer_full_list:
+            open_connections_metrics = get_metrics('open_connections', load_balancer_id)
             hetzner_openconnections.labels(hetzner_load_balancer_id=load_balancer_id,
-                                hetzner_load_balancer_name=lb_name).set(get_metrics('open_connections',load_balancer_id)["metrics"]["time_series"]["open_connections"]["values"][0][1])
+                                hetzner_load_balancer_name=lb_name).set(
+                                    extract_latest_metric_value(open_connections_metrics, "open_connections")
+                                )
+
+            connections_per_second_metrics = get_metrics('connections_per_second', load_balancer_id)
             hetzner_connections_per_second.labels(hetzner_load_balancer_id=load_balancer_id,
-                            hetzner_load_balancer_name=lb_name).set(get_metrics('connections_per_second',load_balancer_id)["metrics"]["time_series"]["connections_per_second"]["values"][0][1])
+                            hetzner_load_balancer_name=lb_name).set(
+                                extract_latest_metric_value(connections_per_second_metrics, "connections_per_second")
+                            )
             if load_balancer_type == 'http':
+                requests_per_second_metrics = get_metrics('requests_per_second', load_balancer_id)
                 hetzner_requests_per_second.labels(hetzner_load_balancer_id=load_balancer_id,
-                                hetzner_load_balancer_name=lb_name).set(get_metrics('requests_per_second',load_balancer_id)["metrics"]["time_series"]["requests_per_second"]["values"][0][1])
+                                hetzner_load_balancer_name=lb_name).set(
+                                    extract_latest_metric_value(requests_per_second_metrics, "requests_per_second")
+                                )
+
+            bandwidth_metrics = get_metrics('bandwidth', load_balancer_id)
             hetzner_bandwidth_in.labels(hetzner_load_balancer_id=load_balancer_id,
-                                hetzner_load_balancer_name=lb_name).set(get_metrics('bandwidth',load_balancer_id)["metrics"]["time_series"]["bandwidth.in"]["values"][0][1])
+                                hetzner_load_balancer_name=lb_name).set(
+                                    extract_latest_metric_value(bandwidth_metrics, "bandwidth.in")
+                                )
             hetzner_bandwidth_out.labels(hetzner_load_balancer_id=load_balancer_id,
-                                hetzner_load_balancer_name=lb_name).set(get_metrics('bandwidth',load_balancer_id)["metrics"]["time_series"]["bandwidth.out"]["values"][0][1])
+                                hetzner_load_balancer_name=lb_name).set(
+                                    extract_latest_metric_value(bandwidth_metrics, "bandwidth.out")
+                                )
 
             lb_info = get_load_balancer_info(load_balancer_id)['load_balancer']
 

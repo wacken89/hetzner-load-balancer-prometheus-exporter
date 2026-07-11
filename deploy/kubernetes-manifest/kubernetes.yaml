@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: exporter
-        image: wacken/hetzner-load-balancer-prometheus-exporter:latest
+        image: wacken/hetzner-load-balancer-prometheus-exporter:1.7.0
         env:
         - name: LOAD_BALANCER_IDS
           value: ""

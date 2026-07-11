@@ -6,9 +6,10 @@ replicaCount: 1
 
 image:
   repository: wacken/hetzner-load-balancer-prometheus-exporter
-  pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion (currently 1.7.0).
+  # Leave empty to track appVersion; set e.g. "latest" to always pull the newest.
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""

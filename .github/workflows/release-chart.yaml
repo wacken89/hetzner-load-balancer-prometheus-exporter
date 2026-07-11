@@ -33,4 +33,6 @@ jobs:
           charts_dir: deploy
           config: cr.yaml
         env:
-          CR_TOKEN: "${{ secrets.CR_TOKEN }}"
+          # Built-in token; the job already grants `contents: write`, which is
+          # enough to create the release and push to the gh-pages index.
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

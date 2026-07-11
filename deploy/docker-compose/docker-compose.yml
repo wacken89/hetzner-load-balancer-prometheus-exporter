@@ -1,11 +1,59 @@
-version: "3.9"
 services:
-  hetzner-load-balancer-prometheus-exporter:
-    image: test
-    container_name: hetzner-lb
+  exporter:
+    build:
+      # Build context is the repository root so the Dockerfile can COPY ./code.
+      context: ../..
+      dockerfile: Dockerfile
+    image: hetzner-load-balancer-prometheus-exporter:local
+    container_name: hetzner-lb-exporter
+    restart: unless-stopped
     ports:
-      - 8000
+      - "8000:8000"
     environment:
-      LOAD_BALANCER_IDS: 'all'
-      ACCESS_TOKEN: ''
-      SCRAPE_INTERVAL: '30'
+      LOAD_BALANCER_IDS: "${LOAD_BALANCER_IDS:-all}"
+      ACCESS_TOKEN: "${HETZNER_ACCESS_TOKEN:?set HETZNER_ACCESS_TOKEN in your environment or .env file}"
+      SCRAPE_INTERVAL: "${SCRAPE_INTERVAL:-30}"
+      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/').read()"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  prometheus:
+    image: prom/prometheus:v3.13.1
+    container_name: hetzner-lb-prometheus
+    restart: unless-stopped
+    depends_on:
+      - exporter
+    ports:
+      - "9090:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=15d"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+
+  grafana:
+    image: grafana/grafana:13.1.0
+    container_name: hetzner-lb-grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: "${GRAFANA_ADMIN_USER:-admin}"
+      GF_SECURITY_ADMIN_PASSWORD: "${GRAFANA_ADMIN_PASSWORD:-admin}"
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      # The dashboard JSON is reused as-is from the repo's example directory.
+      - ../../example/grafana-dashboard:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+
+volumes:
+  prometheus-data:
+  grafana-data:

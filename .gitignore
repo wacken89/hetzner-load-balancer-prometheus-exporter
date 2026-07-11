@@ -1,0 +1,9 @@
+# Local environment file — may contain the Hetzner API token. Never commit it.
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/

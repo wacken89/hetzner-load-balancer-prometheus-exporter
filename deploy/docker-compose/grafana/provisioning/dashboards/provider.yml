@@ -1,0 +1,14 @@
+apiVersion: 1
+
+providers:
+  - name: Hetzner
+    orgId: 1
+    folder: Hetzner
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      # Dashboards mounted from the repo's example/grafana-dashboard directory.
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false

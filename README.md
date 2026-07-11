@@ -53,6 +53,25 @@ The exporter can be configured using environment variables. Instead of providing
 | Optional `SCRAPE_INTERVAL` | value in seconds, default value is `30 seconds` |
 | Optional `SCRAPE_INTERVAL_PATH` | Path to a file containing the scrape interval |
 
+#### Docker Compose usage (all-in-one: exporter + Prometheus + Grafana)
+
+A ready-to-run stack lives in `deploy/docker-compose`. It builds the exporter
+from source and starts Prometheus and Grafana with the datasource and dashboard
+already provisioned.
+
+```bash
+cd deploy/docker-compose
+cp .env.example .env      # then set HETZNER_ACCESS_TOKEN (and optionally LOAD_BALANCER_IDS)
+docker compose up -d --build
+```
+
+Then open:
+
+- Exporter metrics: <http://localhost:8000>
+- Prometheus: <http://localhost:9090>
+- Grafana: <http://localhost:3000> (default login `admin` / `admin`) — the
+  **Hetzner Load Balancer** dashboard is under the *Hetzner* folder.
+
 #### Kubernetes usage
 
 In `deploy/kubernetes.yaml` add in `env` section id which we got from `API` and `API TOKEN`

@@ -225,6 +225,27 @@ def set_gauge(gauge: Gauge, labels: dict, value: Optional[float]) -> None:
     gauge.labels(**labels).set(value)
 
 
+def _optional_float(value: Any) -> Optional[float]:
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def count_assigned_certificates(services: list) -> int:
+    """Unique certificate IDs across services (matches max_assigned_certificates)."""
+    ids = set()
+    for service in services:
+        http = service.get('http') or {}
+        for cert in http.get('certificates') or []:
+            cert_id = cert.get('id') if isinstance(cert, dict) else cert
+            if cert_id is not None:
+                ids.add(cert_id)
+    return len(ids)
+
+
 def _supports_color() -> bool:
     """Enable ANSI colours only on a real terminal (and honour NO_COLOR)."""
     return sys.stdout.isatty() and 'NO_COLOR' not in os.environ
@@ -335,6 +356,22 @@ if __name__ == '__main__':
     hetzner_requests_per_second = Gauge('hetzner_load_balancer_requests_per_second', 'Requests per Second on Hetzner Load Balancer', id_name_list)
     hetzner_bandwidth_in = Gauge('hetzner_load_balancer_bandwidth_in', 'Bandwidth in on Hetzner Load Balancer', id_name_list)
     hetzner_bandwidth_out = Gauge('hetzner_load_balancer_bandwidth_out', 'Bandwidth out on Hetzner Load Balancer', id_name_list)
+    hetzner_max_connections = Gauge('hetzner_load_balancer_max_connections', 'Maximum simultaneous open connections for this Load Balancer type', id_name_list)
+    hetzner_max_services = Gauge('hetzner_load_balancer_max_services', 'Maximum services for this Load Balancer type', id_name_list)
+    hetzner_max_targets = Gauge('hetzner_load_balancer_max_targets', 'Maximum targets for this Load Balancer type', id_name_list)
+    hetzner_max_assigned_certificates = Gauge('hetzner_load_balancer_max_assigned_certificates', 'Maximum SSL certificates that can be assigned to this Load Balancer type', id_name_list)
+    hetzner_services = Gauge('hetzner_load_balancer_services', 'Number of services configured on the Load Balancer', id_name_list)
+    hetzner_targets = Gauge('hetzner_load_balancer_targets', 'Number of resolved targets on the Load Balancer', id_name_list)
+    hetzner_assigned_certificates = Gauge('hetzner_load_balancer_assigned_certificates', 'Unique SSL certificates assigned to the Load Balancer', id_name_list)
+    hetzner_outgoing_traffic = Gauge('hetzner_load_balancer_outgoing_traffic', 'Outbound traffic in the current Hetzner billing period (bytes); resets when that period rolls', id_name_list)
+    hetzner_ingoing_traffic = Gauge('hetzner_load_balancer_ingoing_traffic', 'Inbound traffic in the current Hetzner billing period (bytes); resets when that period rolls', id_name_list)
+    hetzner_included_traffic = Gauge('hetzner_load_balancer_included_traffic', 'Included free traffic in the current Hetzner billing period (bytes)', id_name_list)
+    lb_type_capacity_gauges = {
+        'max_connections': hetzner_max_connections,
+        'max_services': hetzner_max_services,
+        'max_targets': hetzner_max_targets,
+        'max_assigned_certificates': hetzner_max_assigned_certificates,
+    }
 
     id_name_service_list = id_name_list + ['hetzner_target_id', 'hetzner_target_name', 'hetzner_target_port']
     hetzner_service_state = Gauge('hetzner_load_balancer_service_state', "Health status of Load Balancer's services", id_name_service_list)
@@ -375,12 +412,30 @@ if __name__ == '__main__':
                       extract_latest_metric_value(metrics_payload, 'bandwidth.out'))
 
             lb_info = get_load_balancer_info(load_balancer_id).get('load_balancer', {})
+            lb_type = lb_info.get('load_balancer_type') or {}
+            for field, gauge in lb_type_capacity_gauges.items():
+                set_gauge(gauge, base_labels, _optional_float(lb_type.get(field)))
+
+            for field, gauge in (
+                ('outgoing_traffic', hetzner_outgoing_traffic),
+                ('ingoing_traffic', hetzner_ingoing_traffic),
+                ('included_traffic', hetzner_included_traffic),
+            ):
+                set_gauge(gauge, base_labels, _optional_float(lb_info.get(field)))
+
+            services = lb_info.get('services') or []
+            set_gauge(hetzner_services, base_labels, float(len(services)))
+            set_gauge(hetzner_assigned_certificates, base_labels,
+                      float(count_assigned_certificates(services)))
+
             targets = []
             for x in lb_info.get('targets', []):
                 if x.get('type') in ('server', 'ip'):
                     targets.append(x)
                 elif x.get('type') == 'label_selector':
                     targets.extend(x.get('targets', []))
+
+            set_gauge(hetzner_targets, base_labels, float(len(targets)))
 
             for target in targets:
                 for health_status in target.get('health_status', []):
